@@ -1,0 +1,3 @@
+rootProject.name = 'sponge-marketplace'
+
+include 'sponge-marketplace-common', 'sponge-marketplace-sponge', 'sponge-marketplace-forge'
