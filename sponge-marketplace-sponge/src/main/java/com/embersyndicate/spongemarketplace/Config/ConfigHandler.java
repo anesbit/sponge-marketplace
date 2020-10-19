@@ -30,15 +30,14 @@ public class ConfigHandler {
     public static String pass = null;
     public static String db = null;
     public static String dbPrefix = null;
-
-}
+    public static String pluginPrefix = null;
 
     public static void init(File rootDir) {
         configFile = new File(rootDir, "config.conf");
         configManager = HoconConfigurationLoader.builder().setPath(configFile.toPath()).build();
     }
 
-    public static void load(){
+    public static void load() {
         load(null);
     }
 
@@ -66,9 +65,10 @@ public class ConfigHandler {
         Utils.ensureString(config.getNode("Database", "dbType"), "H2");
         Utils.ensureString(config.getNode("Database", "Host"), "localhost");
         Utils.ensureString(config.getNode("Database", "Username"), "root");
-        Utils.ensureString(config.getNode("Database","Password"), "");
+        Utils.ensureString(config.getNode("Database", "Password"), "");
         Utils.ensureString(config.getNode("Database", "DB Name"), "smarket");
         Utils.ensureString(config.getNode("Database", "DB Prefix"), "sm_");
+        Utils.ensureString(config.getNode("Messages", "Plugin Prefix"), "market");
 
         //Set the comment in the config
         config.getNode("Aliases").setComment("The aliases the plugin uses for commands. The first value is always displayed when running the base command!" + "\n" + "Requires server restart to change!");
@@ -78,6 +78,7 @@ public class ConfigHandler {
         config.getNode("Database", "Password").setComment("Password for the database. (Default: '')");
         config.getNode("Database", "DB Name").setComment("Name of the DB. (Default: market");
         config.getNode("Database", "DB Prefix").setComment("Table Prefix for DB (Default: sm_)");
+        config.getNode("messages", "Plugin Prefix").setComment("Prefix for chat commands (Default: market)");
         save();
     }
 
@@ -99,6 +100,7 @@ public class ConfigHandler {
             pass = getNode("Database", "PAssword").getString();
             db = getNode("Database", "DB Name").getString();
             dbPrefix = getNode("Database", "DB Prefix").getString();
+            pluginPrefix = getNode("Messages", "Plugin Prefix").getString();
 
 
         } catch (Exception e) {
@@ -111,24 +113,25 @@ public class ConfigHandler {
         return config.getNode(path);
     }
 
-class Utils {
+    static class Utils {
 
-    public static void ensureString(CommentedConfigurationNode node, String def) {
-        if (node.getString() == null) {
-            node.setValue(def);
-        }
-    }
-
-    public static void ensureListAlias(CommentedConfigurationNode node, List<String> def) {
-        if (!(node.getValue() instanceof List)) {
-            node.setValue(def);
-        }
-        try {
-            if(node.getList(TypeToken.of(String.class)).size() == 0){
+        public static void ensureString(CommentedConfigurationNode node, String def) {
+            if (node.getString() == null) {
                 node.setValue(def);
             }
-        } catch (ObjectMappingException e) {
-            e.printStackTrace();
+        }
+
+        public static void ensureListAlias(CommentedConfigurationNode node, List<String> def) {
+            if (!(node.getValue() instanceof List)) {
+                node.setValue(def);
+            }
+            try {
+                if (node.getList(TypeToken.of(String.class)).size() == 0) {
+                    node.setValue(def);
+                }
+            } catch (ObjectMappingException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

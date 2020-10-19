@@ -1,9 +1,10 @@
 package com.embersyndicate.spongemarketplace;
 
+import com.embersyndicate.spongemarketplace.Commands.CommandsList;
 import com.embersyndicate.spongemarketplace.Config.ConfigHandler;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
-//import org.spongepowered.api.Game;
+import org.spongepowered.api.Game;
 import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
@@ -30,7 +31,7 @@ public class SpongeMarketplace {
     private File defaultConfigDir;
 
     @Inject
-    //private Game game;
+    public Game game;
 
 
 
@@ -48,6 +49,7 @@ public class SpongeMarketplace {
         instance = this;
         File rootDir = new File(defaultConfigDir, "sponge-marketplace");
         ConfigHandler.init(rootDir);
+        CommandsList.RegisterCommands();
     }
 
     @Listener
